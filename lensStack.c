@@ -150,38 +150,34 @@ void    group_thin_lens (elementGroupT *eg, double *efl, double *bfl) {
 int main (int argc, char **argv) {
 
     elementGroupT   eg;
-    double efl, bfl;
+    double gefl, efl, bfl;
 
-    init_element_group(&eg, 5);
+    float p1, p2;
 
-    eg.element[0].e.lens.focal_length = 200;
-    eg.element[0].e.lens.diameter = 50;
-    eg.element[0].e.lens.width = 5;
-    eg.position[0] = 100;
+    init_element_group(&eg, 2);
 
-    eg.element[1].e.lens.focal_length = 200;
-    eg.element[1].e.lens.diameter = 50;
-    eg.element[1].e.lens.width = 5;
-    eg.position[1] = 95;
+    printf ("p1, p2, efl, bfl, gefl\n");
 
-    eg.element[2].e.lens.focal_length = 200;
-    eg.element[2].e.lens.diameter = 50;
-    eg.element[2].e.lens.width = 5;
-    eg.position[2] = 90;
+    for (p1=30; p1<60; p1+=0.5)
+    for (p2=p1+7; p2<100; p2+=0.5) {
 
-    eg.element[3].type = aperture;
-    eg.element[3].e.aperture.diameter = 40;
-    eg.position[3] = 87;
+        // https://www.edmundoptics.com.au/p/30mm-dia-x-30mm-fl-uncoated-double-convex-lens/18191/
+        eg.element[0].e.lens.focal_length = 30;
+        eg.element[0].e.lens.diameter = 30;
+        eg.element[0].e.lens.width = 6.5;
+        eg.position[0] = p2;    
+    
+        // https://www.edmundoptics.com.au/p/25mm-dia-x50mm-fl-uncoated-double-concave-lens/2761/
+        eg.element[1].e.lens.focal_length = -50;
+        eg.element[1].e.lens.diameter = 25;
+        eg.element[1].e.lens.width = 5.4;
+        eg.position[1] = p1;
 
-    eg.element[4].e.lens.focal_length = 200;
-    eg.element[4].e.lens.diameter = 50;
-    eg.element[4].e.lens.width = 5;
-    eg.position[4] = 84;
+        gefl = group_focal_length (&eg);
+        group_thin_lens (&eg, &efl, &bfl);
 
-    efl = group_focal_length (&eg);
-    printf ("Group focal length = %6.4f\n", efl); 
+        printf ("%6.4f, %6.4f, %6.4f, %6.4f, %6.4f\n", p1, p2, efl, bfl, gefl);
 
-    group_thin_lens (&eg, &efl, &bfl);
-    printf ("Group thin lens: elf=%6.4f, bfl=%6.4f\n", efl, bfl); 
+    }
     
 }
